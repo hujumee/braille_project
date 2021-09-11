@@ -11,23 +11,15 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.MenuItem
-import android.view.View
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.camera.*
-import kotlinx.android.synthetic.main.main.*
-import kotlinx.android.synthetic.main.main_toolbar.*
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 
-class MainActivity : AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener{
+class CameraAndGalleryActivity : AppCompatActivity() {
 
     val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
     val STORAGE_PERMISSION = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -40,72 +32,19 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main)
+        setContentView(R.layout.camera)
 
-        setSupportActionBar(main_layout_toolbar) // 툴바를 액티비티의 앱바로 지정
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 드로어를 꺼낼 홈 버튼 활성화
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu) // 홈버튼 이미지 변경
-        //supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
-        main_navigationView.setNavigationItemSelectedListener(this) //navigation 리스너
-
-        findViewById<View>(R.id.img_select_btn).setOnClickListener { view ->
-            val popupMenu = PopupMenu(applicationContext, view)
-            menuInflater.inflate(R.menu.img_select, popupMenu.getMenu())
-
-            popupMenu.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-
-                override fun onMenuItemClick(menuItem: MenuItem): Boolean {
-                    if (menuItem.itemId == R.id.gallery) {
-                        if (checkPermission(STORAGE_PERMISSION, FLAG_PERM_STORAGE)) {
-                            openGallery()
-                        }
-                        return true
-                    } else if (menuItem.itemId == R.id.camera) {
-                        if (checkPermission(STORAGE_PERMISSION, FLAG_PERM_STORAGE)) {
-                            openCamera()
-                        }
-                    }
-                    return false
-                }
-            })
-            popupMenu.show()
+        if (checkPermission(STORAGE_PERMISSION, FLAG_PERM_STORAGE)) {
+            setViews()
         }
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            android.R.id.home->{ // 메뉴 버튼
-                main_drawer_layout.openDrawer(GravityCompat.START)    // 네비게이션 드로어 열기
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+        //val cameraIntent = Intent(this, MainActivity::class.java)
 
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        val homeIntent = Intent(this, MainActivity::class.java)
-
-        val transDocIntent = Intent(this, TransformedDocActivity::class.java)
-
-        val transBrailleIntent = Intent(this, TransformedBrailleActivity::class.java)
-
-        val bookmarkIntent = Intent(this, BookmarkActivity::class.java)
-
-        val setIntent = Intent(this, SetActivity::class.java)
-
-        when(item.itemId){
-            R.id.item1-> startActivity(homeIntent)
-            R.id.item2-> startActivity(transDocIntent)
-            R.id.item3-> startActivity(transBrailleIntent)
-            R.id.item4-> startActivity(bookmarkIntent)
-            R.id.item5-> startActivity(setIntent)
-        }
-        return false
     }
 
     fun setViews() {
-        fun onMenuItemClick(menuItem: MenuItem): Boolean {
+
+        /* fun onMenuItemClick(menuItem: MenuItem): Boolean {
             if (menuItem.itemId == R.id.gallery) {
                 openGallery()
                 return true
@@ -113,6 +52,13 @@ class MainActivity : AppCompatActivity(),
                 openCamera()
             }
             return false
+        }*/
+
+        camera_btn.setOnClickListener {
+            openCamera()
+        }
+        gallery_btn.setOnClickListener {
+            openGallery()
         }
     }
 
@@ -187,6 +133,8 @@ class MainActivity : AppCompatActivity(),
         return "$filename.jpg"
     }
 
+    //여기서 부터 권한 처리 관련 메서드
+
     fun checkPermission(permissions: Array<out String>, flag: Int) : Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             for (permission in permissions) {
@@ -229,11 +177,3 @@ class MainActivity : AppCompatActivity(),
         }
     }
 }
-
-
-
-
-
-
-
-

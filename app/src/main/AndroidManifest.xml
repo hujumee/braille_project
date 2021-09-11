@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.techtown.dotanddoc">
 
+    <!--카메라 권한-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!--갤러리 권한-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +24,30 @@
             android:name=".TransformedBrailleActivity"
             tools:ignore="Instantiatable" />
 
+        <activity
+            android:name=".CameraAndGalleryActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".TransformedDocActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".BookmarkActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".SetActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".ImgSelectActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".TextSelectActivity"
+            tools:ignore="Instantiatable" />
+
         <activity android:name=".MainActivity"
             android:theme="@style/Theme.DotAndDoc"
             tools:ignore="Instantiatable">
@@ -24,7 +56,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

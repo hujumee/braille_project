@@ -10,6 +10,8 @@
 
     <!--메인 레이아웃-->
     <include layout="@layout/main_layout"/>
+    <include layout="@layout/home_btn"/>
+    <include layout="@layout/home_text"/>
 
     <!--자식 레이아웃. Navigation Drawer-->
     <com.google.android.material.navigation.NavigationView
@@ -18,6 +20,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="left"
         app:menu="@menu/main_drawer_navigation">
-
     </com.google.android.material.navigation.NavigationView>
+
 </androidx.drawerlayout.widget.DrawerLayout>
