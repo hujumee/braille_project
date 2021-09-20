@@ -21,6 +21,10 @@
         android:theme="@style/Theme.DotAndDoc">
 
         <activity
+            android:name=".WriteActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
             android:name=".TransformedBrailleActivity"
             tools:ignore="Instantiatable" />
 
