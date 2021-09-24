@@ -25,6 +25,10 @@
             tools:ignore="Instantiatable" />
 
         <activity
+            android:name=".BookmarkBrailleListItem"
+            tools:ignore="Instantiatable" />
+
+        <activity
             android:name=".TransformedBrailleActivity"
             tools:ignore="Instantiatable" />
 
