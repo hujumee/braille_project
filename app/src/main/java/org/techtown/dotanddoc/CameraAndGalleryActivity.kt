@@ -1,25 +1,16 @@
 package org.techtown.dotanddoc
 
-import android.Manifest
-import android.app.Activity
-import android.content.ContentValues
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.camera.*
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
 
 class CameraAndGalleryActivity : AppCompatActivity() {
+
+    /*
+    object context_main {
+        var a = 0
+    }
+
+    //var context_main: Context? = null
+    //var a = 0
 
     val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
     val STORAGE_PERMISSION = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -32,13 +23,11 @@ class CameraAndGalleryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.camera)
+        setContentView(R.layout.camera_image_view)
 
         if (checkPermission(STORAGE_PERMISSION, FLAG_PERM_STORAGE)) {
             setViews()
         }
-
-        //val cameraIntent = Intent(this, MainActivity::class.java)
 
     }
 
@@ -175,5 +164,5 @@ class CameraAndGalleryActivity : AppCompatActivity() {
                 openCamera()
             }
         }
-    }
+    }*/
 }

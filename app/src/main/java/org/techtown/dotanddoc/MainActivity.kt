@@ -20,7 +20,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.camera.*
 import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.main_toolbar.*
 import java.io.FileOutputStream
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity(),
         setSupportActionBar(main_layout_toolbar) // 툴바를 액티비티의 앱바로 지정
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // 드로어를 꺼낼 홈 버튼 활성화
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu) // 홈버튼 이미지 변경
-        //supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
         main_navigationView.setNavigationItemSelectedListener(this) //navigation 리스너
 
         findViewById<View>(R.id.img_select_btn).setOnClickListener { view ->
@@ -60,6 +58,7 @@ class MainActivity : AppCompatActivity(),
                             openGallery()
                         }
                         return true
+
                     } else if (menuItem.itemId == R.id.camera) {
                         if (checkPermission(STORAGE_PERMISSION, FLAG_PERM_STORAGE)) {
                             openCamera()
@@ -131,23 +130,30 @@ class MainActivity : AppCompatActivity(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (resultCode == Activity.RESULT_OK) {
+            val afterCameraIntent = Intent(this, AfterCameraActivity::class.java)
+            //intent.putExtra("image", Bitmap)
+
             when (requestCode){
                 FLAG_REQ_CAMERA -> {
                     if (data?.extras?.get("data") != null) {
                         val bitmap = data?.extras?.get("data") as Bitmap
                         //imagePreview.setImageBitmap(bitmap)
                         val uri = saveImageFile(newFileName(), "image/jpg", bitmap)
-                        imagePreview.setImageURI(uri)
+                        //imagePreview.setImageURI(uri)
+                        //intent.putExtra("image", "")
+                        startActivity(afterCameraIntent)
                     }
                 }
                 FLAG_REQ_STORAGE -> {
                     val uri = data?.data
-                    imagePreview.setImageURI(uri)
+                    //imagePreview.setImageURI(uri)
                 }
             }
         }
     }
+
 
     fun saveImageFile(filename:String, mimeType:String, bitmap: Bitmap) : Uri? {
         var values = ContentValues()
