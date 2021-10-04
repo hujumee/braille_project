@@ -133,22 +133,21 @@ class MainActivity : AppCompatActivity(),
 
         if (resultCode == Activity.RESULT_OK) {
             val afterCameraIntent = Intent(this, AfterCameraActivity::class.java)
-            //intent.putExtra("image", Bitmap)
 
             when (requestCode){
                 FLAG_REQ_CAMERA -> {
                     if (data?.extras?.get("data") != null) {
                         val bitmap = data?.extras?.get("data") as Bitmap
-                        //imagePreview.setImageBitmap(bitmap)
+                        //imageView.setImageBitmap(bitmap)
                         val uri = saveImageFile(newFileName(), "image/jpg", bitmap)
-                        //imagePreview.setImageURI(uri)
-                        //intent.putExtra("image", "")
+                        afterCameraIntent.putExtra("image", uri.toString())
+                        //afterCameraIntent.putExtra("bitImage", bitmap) 비트맵으로 보낼 경우.
                         startActivity(afterCameraIntent)
                     }
                 }
                 FLAG_REQ_STORAGE -> {
                     val uri = data?.data
-                    //imagePreview.setImageURI(uri)
+                    //imageView.setImageURI(uri)
                 }
             }
         }
