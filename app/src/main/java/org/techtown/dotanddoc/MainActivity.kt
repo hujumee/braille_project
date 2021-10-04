@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity(),
 
         if (resultCode == Activity.RESULT_OK) {
             val afterCameraIntent = Intent(this, AfterCameraActivity::class.java)
+            val OcrIntent = Intent(this, OcrActivity::class.java)
 
             when (requestCode){
                 FLAG_REQ_CAMERA -> {
@@ -143,6 +144,9 @@ class MainActivity : AppCompatActivity(),
                         afterCameraIntent.putExtra("image", uri.toString())
                         //afterCameraIntent.putExtra("bitImage", bitmap) 비트맵으로 보낼 경우.
                         startActivity(afterCameraIntent)
+
+                        OcrIntent.putExtra("ocrImage", uri.toString())
+                        startActivity(OcrIntent)
                     }
                 }
                 FLAG_REQ_STORAGE -> {
