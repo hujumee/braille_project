@@ -29,7 +29,7 @@
         </provider>
 
         <activity
-            android:name=".OcrActivity"
+            android:name=".ocrActivity"
             tools:ignore="Instantiatable" />
 
         <activity
