@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
-        val homeIntent = Intent(this, MainActivity::class.java)
+        val homeIntent = Intent(this, MainActivity::class.java)i
 
         val transDocIntent = Intent(this, TransformedDocActivity::class.java)
 
@@ -138,7 +138,9 @@ class MainActivity : AppCompatActivity(),
                         val bitmap = data?.extras?.get("data") as Bitmap
                         //imagePreview.setImageBitmap(bitmap)
                         val uri = saveImageFile(newFileName(), "image/jpg", bitmap)
+
                         imagePreview.setImageURI(uri)
+
                     }
                 }
                 FLAG_REQ_STORAGE -> {
@@ -177,6 +179,7 @@ class MainActivity : AppCompatActivity(),
         } catch (e:java.lang.Exception) {
             Log.e("File", "error=${e.localizedMessage}")
         }
+        Log.e("DATA?", uri.toString())
         return uri
     }
 

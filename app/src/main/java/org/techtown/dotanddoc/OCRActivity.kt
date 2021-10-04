@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.EditText
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -18,7 +19,12 @@ class OCRActivity : AppCompatActivity() {
     val text_info : EditText = findViewById(R.id.content)
     val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
 
-    //이미지 저장 후 imageFromPath가 실행되는 코드 작성
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.edit)
+        //intent를 받아오는 코드 작성
+        //imageFromPath(this, uri)
+    }
 
 
     //uri로부터 이미지 가져오기
