@@ -2,10 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.techtown.dotanddoc">
+<<<<<<< HEAD
     <!-- 카메라 권한 -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 갤러리 권한 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+=======
+
+    <!--카메라 권한-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!--갤러리 권한-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+>>>>>>> origin/master
 
     <application
         android:allowBackup="true"
@@ -15,12 +25,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DotAndDoc">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.blacklog.takepicture.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
         <activity
-            android:name=".OCRActivity"
-            android:exported="true" />
+            android:name=".OcrActivity"
+            tools:ignore="Instantiatable" />
+
         <activity
             android:name=".WriteActivity"
             tools:ignore="Instantiatable" />
+        <activity
+            android:name=".AfterCameraActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".BookmarkBrailleListItem"
+            tools:ignore="Instantiatable" />
+
         <activity
             android:name=".TransformedBrailleActivity"
             tools:ignore="Instantiatable" />
@@ -35,9 +65,6 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".SetActivity"
-            tools:ignore="Instantiatable" />
-        <activity
-            android:name=".ImgSelectActivity"
             tools:ignore="Instantiatable" />
         <activity
             android:name=".TextSelectActivity"
