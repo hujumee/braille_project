@@ -2,20 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.techtown.dotanddoc">
-<<<<<<< HEAD
-    <!-- 카메라 권한 -->
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- 갤러리 권한 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-=======
-
     <!--카메라 권한-->
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <!--갤러리 권한-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
->>>>>>> origin/master
 
     <application
         android:allowBackup="true"
