@@ -13,7 +13,7 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import java.io.IOException
 
-class ocrActivity : AppCompatActivity() {
+class OCRActivity : AppCompatActivity() {
 
     //edit.xml의 EditTextView
     val text_info : EditText = findViewById(R.id.content)

@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(),
 
         if (resultCode == Activity.RESULT_OK) {
             val afterCameraIntent = Intent(this, AfterCameraActivity::class.java)
-            val OcrIntent = Intent(this, ocrActivity::class.java)
+            val OcrIntent = Intent(this, OCRActivity::class.java)
 
             when (requestCode){
                 FLAG_REQ_CAMERA -> {
