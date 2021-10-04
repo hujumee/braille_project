@@ -1,10 +1,13 @@
 package org.techtown.dotanddoc
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -15,19 +18,20 @@ import java.io.IOException
 
 class OCRActivity : AppCompatActivity() {
 
-    //edit.xml의 EditTextView
-    val text_info : EditText = findViewById(R.id.content)
+    lateinit var text_info : EditText
     val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit)
+        text_info = findViewById(R.id.content) //edit.xml의 EditTextView
 
         //intent.getParcelableExtra<Bitmap>("bitImage") 비트맵으로 받아올 경우.
 
         var ocrImage = intent.getStringExtra("ocrImage")
         val uri: Uri = Uri.parse(ocrImage) //이 uri 변수 사용하면 됩니다!!!
-        
+
+        imageFromPath(this, uri)
     }
 
     //uri로부터 이미지 가져오기
@@ -35,7 +39,7 @@ class OCRActivity : AppCompatActivity() {
         val image: InputImage
         try {
             image = InputImage.fromFilePath(context, uri)
-            //recognizeText(image)
+            recognizeText(image)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -46,13 +50,21 @@ class OCRActivity : AppCompatActivity() {
         //이미지를 process method로 보냄
         val result = recognizer.process(image)
             .addOnSuccessListener {
-                //이미지 인식이 성공했을 때
-                //processTextBlock(result)
+                // Task completed successfully
+                // [START_EXCLUDE]
+                Log.d("ML KIT", "uri 전달 성공")
+                val visionText = it
+                processTextBlock(visionText)
+                // [END get_text]
+                // [END_EXCLUDE]
             }
             .addOnFailureListener {
                 //이미지 인식이 실패했을 때
                 //사용자에게 alert 작성
+                Toast.makeText(this,"이미지 인식에 실패했습니다.",Toast.LENGTH_SHORT).show()
                 //전 화면으로 돌아가는 코드 작성
+                val noImageIntent = Intent(this, MainActivity::class.java)
+                startActivity(noImageIntent)
             }
     }
 
@@ -74,7 +86,6 @@ class OCRActivity : AppCompatActivity() {
                 }
             }
         }
-        //text_info.setText(resultText)
+        text_info.setText(resultText)
     }
-
 }
