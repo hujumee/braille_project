@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(),
 
         if (resultCode == Activity.RESULT_OK) {
             val afterCameraIntent = Intent(this, AfterCameraActivity::class.java)
-            val OcrIntent = Intent(this, OcrActivity::class.java)
+            val OcrIntent = Intent(this, OCRActivity::class.java)
 
             when (requestCode){
                 FLAG_REQ_CAMERA -> {
@@ -186,6 +186,7 @@ class MainActivity : AppCompatActivity(),
         } catch (e:java.lang.Exception) {
             Log.e("File", "error=${e.localizedMessage}")
         }
+        Log.e("DATA?", uri.toString())
         return uri
     }
 
