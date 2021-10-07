@@ -1,5 +1,6 @@
 package org.techtown.dotanddoc
 
+
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -20,7 +21,6 @@ class OCRActivity : AppCompatActivity() {
 
     lateinit var text_info : EditText
     val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit)
