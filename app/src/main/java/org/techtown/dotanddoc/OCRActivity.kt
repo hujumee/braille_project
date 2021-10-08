@@ -1,11 +1,9 @@
 package org.techtown.dotanddoc
 
-
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
@@ -13,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import java.io.IOException
 
@@ -21,6 +18,7 @@ class OCRActivity : AppCompatActivity() {
 
     lateinit var text_info : EditText
     val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit)

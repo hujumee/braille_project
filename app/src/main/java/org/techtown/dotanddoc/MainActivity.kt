@@ -6,8 +6,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,8 +24,10 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.main_toolbar.*
 import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 
+//유정이 머지 파일에 코드 합친 거
 class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener{
 
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity(),
 
     val FLAG_REQ_CAMERA = 101
     val FLAG_REQ_STORAGE = 102
+
+    var list = ArrayList<Uri>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +63,7 @@ class MainActivity : AppCompatActivity(),
                             openGallery()
                         }
                         return true
+
 
                     } else if (menuItem.itemId == R.id.camera) {
                         if (checkPermission(STORAGE_PERMISSION, FLAG_PERM_STORAGE)) {
@@ -117,67 +121,114 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    fun openCamera() {
+    /*fun openCamera() {
         if (checkPermission(CAMERA_PERMISSION, FLAG_PERM_CAMERA)) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, FLAG_REQ_CAMERA)
         }
-    }
+    }*/
 
     fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK)
+        intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
         intent.type = MediaStore.Images.Media.CONTENT_TYPE
+        intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(intent, FLAG_REQ_STORAGE)
+
     }
 
-    fun rotate(bitmap: Bitmap?, degrees: Int): Bitmap? { // 이미지 회전 및 이미지 사이즈 압축
-        var bitmap = bitmap
-        if (degrees != 0 && bitmap != null) {
-            val m = Matrix()
-            m.setRotate(degrees.toFloat(), bitmap.width.toFloat() / 2,
-                bitmap.height.toFloat() / 2)
-            try {
-                val converted = Bitmap.createBitmap(bitmap, 0, 0,
-                    bitmap.width, bitmap.height, m, true)
-                if (bitmap != converted) {
-                    bitmap.recycle()
-                    bitmap = converted
-                    val options = BitmapFactory.Options()
-                    options.inSampleSize = 4
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 1280, 1280, true) // 이미지 사이즈 줄이기
-                }
-            } catch (ex: OutOfMemoryError) {
-                // 메모리가 부족하여 회전을 시키지 못할 경우 그냥 원본을 반환합니다.
-            }
-        }
-        return bitmap
+    fun createImageUri(filename: String, mimeType: String) : Uri? {
+        var values = ContentValues()
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
+        values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+
+        return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
+
+    // 카메라 원본이미지 Uri를 저장할 변
+    var photoURI: Uri? = null
+    private fun dispatchTakePictureIntent() {
+        // 카메라 인텐트 생성
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        createImageUri(newFileName(), "image/jpg")?.let { uri ->
+            photoURI = uri
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+            startActivityForResult(takePictureIntent, FLAG_REQ_CAMERA)
+        }
+    }
+
+    fun openCamera() {
+        if (checkPermission(CAMERA_PERMISSION, FLAG_PERM_CAMERA)) {
+            dispatchTakePictureIntent()
+        }
+    }
+
+    fun loadBitmapFromMediaStoreBy(photoUri: Uri): Bitmap? {
+        var image: Bitmap? = null
+        try {
+            image = if (Build.VERSION.SDK_INT > 27) { // Api 버전별 이미지 처리
+                val source: ImageDecoder.Source =
+                    ImageDecoder.createSource(this.contentResolver, photoUri)
+                ImageDecoder.decodeBitmap(source)
+            } else {
+                MediaStore.Images.Media.getBitmap(this.contentResolver, photoUri)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return image
+    }
+
+
+
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
-            val afterCameraIntent = Intent(this, AfterCameraActivity::class.java)
             val OcrIntent = Intent(this, OCRActivity::class.java)
 
             when (requestCode){
                 FLAG_REQ_CAMERA -> {
-                    if (data?.extras?.get("data") != null) {
-                        val bitmap = data?.extras?.get("data") as Bitmap
-                        //imageView.setImageBitmap(bitmap)
-                        val uri = saveImageFile(newFileName(), "image/jpg", bitmap)
-                        afterCameraIntent.putExtra("image", uri.toString())
-                        //afterCameraIntent.putExtra("bitImage", bitmap) 비트맵으로 보낼 경우.
-                        startActivity(afterCameraIntent)
-
-                        OcrIntent.putExtra("ocrImage", uri.toString())
-
-                        startActivity(OcrIntent)
+                        if (photoURI != null) {
+                            val bitmap = loadBitmapFromMediaStoreBy(photoURI!!)
+                            photoURI = null // 사용 후 null 처리
+                            val uri = bitmap?.let { saveImageFile(newFileName(), "image/jpg", it) }
+                            OcrIntent.putExtra("ocrImage", uri.toString())
+                            startActivity(OcrIntent)
+                        }
                     }
-                }
+
                 FLAG_REQ_STORAGE -> {
+                if (resultCode == RESULT_OK && requestCode == 200) {
+                        list.clear()
+
+                        if (data?.clipData != null) { // 사진 여러개 선택한 경우
+                            val count = data.clipData!!.itemCount
+                            if (count > 10) {
+                                Toast.makeText(applicationContext, "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
+                                return
+                            }
+                            for (i in 0 until count) {
+                                val imageUri = data.clipData!!.getItemAt(i).uri
+                                list.add(imageUri)
+                            }
+
+                        } else { // 단일 선택
+                            data?.data?.let { uri ->
+                                val imageUri : Uri? = data?.data
+                                if (imageUri != null) {
+                                    list.add(imageUri)
+                                }
+                            }
+                        }
+
+                    }
                     val uri = data?.data
-                    //imageView.setImageURI(uri)
                 }
             }
         }
