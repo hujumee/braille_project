@@ -30,7 +30,7 @@
         android:layout_toEndOf="@+id/img_select_btn"
         android:layout_toRightOf="@+id/img_select_btn"
         android:background="@drawable/img_select_text"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp" />
 
 </RelativeLayout>

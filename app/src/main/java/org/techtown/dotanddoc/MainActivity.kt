@@ -182,16 +182,11 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-
-
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             val OcrIntent = Intent(this, OCRActivity::class.java)
-
             when (requestCode){
                 FLAG_REQ_CAMERA -> {
                         if (photoURI != null) {
@@ -214,15 +209,31 @@ class MainActivity : AppCompatActivity(),
                                 return
                             }
                             for (i in 0 until count) {
+
                                 val imageUri = data.clipData!!.getItemAt(i).uri
-                                list.add(imageUri)
+                                if (imageUri != null) {
+                                    list.add(imageUri)
+
+                                /*
+                                    val multiImage = list.add(imageUri)
+                                    val multiIntent = Intent(this, MultiImageOCRActivity::class.java)
+                                    multiIntent.putExtra("multiImage", multiImage.toString())
+                                    startActivity(multiIntent)*/
+                                }
                             }
 
                         } else { // 단일 선택
+
                             data?.data?.let { uri ->
                                 val imageUri : Uri? = data?.data
                                 if (imageUri != null) {
                                     list.add(imageUri)
+
+                                /*
+                                    val oneImage=list.add(imageUri)
+                                    val oneIntent = Intent(this, MultiImageOCRActivity::class.java)
+                                    oneIntent.putExtra("oneImage", oneImage.toString())
+                                    startActivity(oneIntent)*/
                                 }
                             }
                         }

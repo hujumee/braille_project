@@ -15,7 +15,7 @@ import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import kotlinx.android.synthetic.main.edit.*
 import java.io.IOException
 
-class OCRActivity : AppCompatActivity() {
+class MultiImageOCRActivity : AppCompatActivity() {
 
     lateinit var text_info : EditText
     val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
@@ -27,10 +27,17 @@ class OCRActivity : AppCompatActivity() {
 
         //intent.getParcelableExtra<Bitmap>("bitImage") 비트맵으로 받아올 경우.
 
-        var ocrImage = intent.getStringExtra("ocrImage")
-        val uri: Uri = Uri.parse(ocrImage) //이 uri 변수 사용하면 됩니다!!!
+        var multiImage = intent.getStringExtra("multiImage")
+        val mUri: Uri = Uri.parse(multiImage) //이미지 여러개
 
-        imageFromPath(this, uri)
+        imageFromPath(this, mUri) //ocr 변환해줘야함!!!
+
+        /*
+        var oneImage = intent.getStringExtra("oneImage")
+        val oUri: Uri = Uri.parse(oneImage) //이미지 한 개
+
+        imageFromPath(this, oUri) //ocr 변환해줘야함!!!
+         */
 
         edit_finish_btn.setOnClickListener({
             val TxtIntent = Intent(this, BeforeTxtBrailleActivity::class.java)
@@ -39,10 +46,10 @@ class OCRActivity : AppCompatActivity() {
     }
 
     //uri로부터 이미지 가져오기
-    private fun imageFromPath(context: Context, uri: Uri) {
+    private fun imageFromPath(context: Context, mUri: Uri) {
         val image: InputImage
         try {
-            image = InputImage.fromFilePath(context, uri)
+            image = InputImage.fromFilePath(context, mUri)
             recognizeText(image)
         } catch (e: IOException) {
             e.printStackTrace()

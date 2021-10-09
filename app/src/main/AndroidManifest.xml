@@ -29,6 +29,18 @@
         </provider>
 
         <activity
+            android:name=".MultiImageOCRActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".BeforeTxtBrailleActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
+            android:name=".TxtBrailleActivity"
+            tools:ignore="Instantiatable" />
+
+        <activity
             android:name=".OCRActivity"
             tools:ignore="Instantiatable" />
 
