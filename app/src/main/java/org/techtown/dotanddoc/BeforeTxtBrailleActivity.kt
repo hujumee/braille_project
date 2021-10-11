@@ -2,6 +2,7 @@ package org.techtown.dotanddoc
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.after_ocr.*
 
@@ -11,9 +12,16 @@ class BeforeTxtBrailleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.after_ocr)
 
+        val resultTxt: String? = intent.getStringExtra("resultTxt")
+
+        Log.d("areyou", resultTxt.toString())
+
         trans_braille_btn.setOnClickListener({
             val BrailleIntent = Intent(this, TxtBrailleActivity::class.java)
+            BrailleIntent.putExtra("resultTxt", resultTxt)
+
             startActivity(BrailleIntent)
         })
     }
+
 }

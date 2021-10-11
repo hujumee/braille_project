@@ -17,20 +17,35 @@ import java.io.IOException
 
 class MultiImageOCRActivity : AppCompatActivity() {
 
+    lateinit var resultIntent : Intent
+
     lateinit var text_info : EditText
     val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+
+    var realResult:String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit)
         text_info = findViewById(R.id.content) //edit.xml의 EditTextView
 
+        resultIntent=Intent(this, BeforeTxtBrailleActivity::class.java)
+
         //intent.getParcelableExtra<Bitmap>("bitImage") 비트맵으로 받아올 경우.
 
-        var multiImage = intent.getStringExtra("multiImage")
-        val mUri: Uri = Uri.parse(multiImage) //이미지 여러개
+        //var multiImage = intent.getSerializableExtra("multiImage")
 
-        imageFromPath(this, mUri) //ocr 변환해줘야함!!!
+        val imageArr:ArrayList<String>? = intent.getStringArrayListExtra("multiImage")
+
+        if (imageArr != null) {
+            for (i in imageArr){
+                val mUri: Uri = Uri.parse(i)
+                imageFromPath(this, mUri)
+            }
+
+            Log.d("text", realResult)
+        }
+
 
         /*
         var oneImage = intent.getStringExtra("oneImage")
@@ -40,48 +55,65 @@ class MultiImageOCRActivity : AppCompatActivity() {
          */
 
         edit_finish_btn.setOnClickListener({
-            val TxtIntent = Intent(this, BeforeTxtBrailleActivity::class.java)
-            startActivity(TxtIntent)
+            startActivity(resultIntent)
         })
     }
 
     //uri로부터 이미지 가져오기
-    private fun imageFromPath(context: Context, mUri: Uri) {
+    private fun imageFromPath(context: Context, mUri: Uri): String {
+        Log.d("abcd","imageFromPath")
+
+        var a:String=""
         val image: InputImage
         try {
             image = InputImage.fromFilePath(context, mUri)
-            recognizeText(image)
+            a = recognizeText(image)
         } catch (e: IOException) {
             e.printStackTrace()
         }
+        Log.d("textAB", a)
+        return a
     }
 
     //텍스트 인식
-    private fun recognizeText(image: InputImage) {
+    private fun recognizeText(image: InputImage): String {
+
+        var a:String=""
+
         //이미지를 process method로 보냄
         val result = recognizer.process(image)
             .addOnSuccessListener {
                 // Task completed successfully
                 // [START_EXCLUDE]
+                Log.d("abcd2","recognizeText")
+
                 Log.d("ML KIT", "uri 전달 성공")
                 val visionText = it
-                processTextBlock(visionText)
+                a = processTextBlock(visionText)
+                realResult += a
+                text_info.setText(realResult)
+                resultIntent.putExtra("resultTxt", realResult)
+                Log.d("textA",realResult)
                 // [END get_text]
                 // [END_EXCLUDE]
             }
             .addOnFailureListener {
                 //이미지 인식이 실패했을 때
                 //사용자에게 alert 작성
+                Log.d("abcd2","recognizeTextFailure")
+
                 Toast.makeText(this,"이미지 인식에 실패했습니다.",Toast.LENGTH_SHORT).show()
                 //전 화면으로 돌아가는 코드 작성
                 val noImageIntent = Intent(this, MainActivity::class.java)
                 startActivity(noImageIntent)
             }
+        return a
     }
 
     //process에서 받은 텍스트 블록 텍스트 추출
-    private fun processTextBlock(result: Text) {
-        val resultIntent = Intent(this, TxtBrailleActivity::class.java)
+    private fun processTextBlock(result: Text): String {
+
+        Log.d("abcd3","processTextBlock")
 
         val resultText = result.text
         for (block in result.textBlocks) {
@@ -99,7 +131,9 @@ class MultiImageOCRActivity : AppCompatActivity() {
                 }
             }
         }
-        val resultTxt=text_info.setText(resultText)
-        resultIntent.putExtra("resultTxt", resultTxt.toString())
+        Log.d("text22", resultText)
+        //resultIntent.putExtra("resultTxt", resultText)
+        return resultText
+        //text_info.setText(resultText)
     }
 }
