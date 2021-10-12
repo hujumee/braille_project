@@ -33,8 +33,6 @@ class MultiImageOCRActivity : AppCompatActivity() {
 
         //intent.getParcelableExtra<Bitmap>("bitImage") 비트맵으로 받아올 경우.
 
-        //var multiImage = intent.getSerializableExtra("multiImage")
-
         val imageArr:ArrayList<String>? = intent.getStringArrayListExtra("multiImage")
 
         if (imageArr != null) {
@@ -46,14 +44,6 @@ class MultiImageOCRActivity : AppCompatActivity() {
             Log.d("text", realResult)
         }
 
-
-        /*
-        var oneImage = intent.getStringExtra("oneImage")
-        val oUri: Uri = Uri.parse(oneImage) //이미지 한 개
-
-        imageFromPath(this, oUri) //ocr 변환해줘야함!!!
-         */
-
         edit_finish_btn.setOnClickListener({
             startActivity(resultIntent)
         })
@@ -61,7 +51,6 @@ class MultiImageOCRActivity : AppCompatActivity() {
 
     //uri로부터 이미지 가져오기
     private fun imageFromPath(context: Context, mUri: Uri): String {
-        Log.d("abcd","imageFromPath")
 
         var a:String=""
         val image: InputImage
@@ -71,7 +60,6 @@ class MultiImageOCRActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        Log.d("textAB", a)
         return a
     }
 
@@ -82,10 +70,10 @@ class MultiImageOCRActivity : AppCompatActivity() {
 
         //이미지를 process method로 보냄
         val result = recognizer.process(image)
+            //비동기 처리이기 때문에 .addOnSuccessListener는 따로 논다.
             .addOnSuccessListener {
                 // Task completed successfully
                 // [START_EXCLUDE]
-                Log.d("abcd2","recognizeText")
 
                 Log.d("ML KIT", "uri 전달 성공")
                 val visionText = it
@@ -93,14 +81,13 @@ class MultiImageOCRActivity : AppCompatActivity() {
                 realResult += a
                 text_info.setText(realResult)
                 resultIntent.putExtra("resultTxt", realResult)
-                Log.d("textA",realResult)
+
                 // [END get_text]
                 // [END_EXCLUDE]
             }
             .addOnFailureListener {
                 //이미지 인식이 실패했을 때
                 //사용자에게 alert 작성
-                Log.d("abcd2","recognizeTextFailure")
 
                 Toast.makeText(this,"이미지 인식에 실패했습니다.",Toast.LENGTH_SHORT).show()
                 //전 화면으로 돌아가는 코드 작성
@@ -112,8 +99,6 @@ class MultiImageOCRActivity : AppCompatActivity() {
 
     //process에서 받은 텍스트 블록 텍스트 추출
     private fun processTextBlock(result: Text): String {
-
-        Log.d("abcd3","processTextBlock")
 
         val resultText = result.text
         for (block in result.textBlocks) {
@@ -131,9 +116,6 @@ class MultiImageOCRActivity : AppCompatActivity() {
                 }
             }
         }
-        Log.d("text22", resultText)
-        //resultIntent.putExtra("resultTxt", resultText)
         return resultText
-        //text_info.setText(resultText)
     }
 }

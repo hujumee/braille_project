@@ -10,8 +10,6 @@ class TxtBrailleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.)
 
-        val resultTxt = intent.getStringExtra("resultTxt")
-
-        Log.d("areyouOK", resultTxt.toString())
+        val resultTxt = intent.getStringExtra("resultTxt") //이놈이 텍스트 파일 최종으로 가져온 겁니다.
     }
 }

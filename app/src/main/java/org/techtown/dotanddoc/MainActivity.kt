@@ -121,13 +121,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    /*fun openCamera() {
-        if (checkPermission(CAMERA_PERMISSION, FLAG_PERM_CAMERA)) {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, FLAG_REQ_CAMERA)
-        }
-    }*/
-
     fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -211,8 +204,6 @@ class MainActivity : AppCompatActivity(),
 
                                 val imageUri = data.clipData!!.getItemAt(i).uri
 
-                                Log.d("aa",imageUri.toString())
-
                                 if (imageUri != null) {
                                     list.add(imageUri.toString())
 
@@ -229,15 +220,14 @@ class MainActivity : AppCompatActivity(),
                                 if (imageUri != null) {
                                     list.add(imageUri.toString())
 
-                                    val oneIntent = Intent(this, MultiImageOCRActivity::class.java)
-                                    oneIntent.putExtra("oneImage", list)
-                                    startActivity(oneIntent)
+                                    val multiIntent = Intent(this, MultiImageOCRActivity::class.java)
+                                    multiIntent.putExtra("multiImage", list)
+                                    startActivity(multiIntent)
                                 }
                             }
                         }
 
                     }
-                    //val uri = data?.data
                 }
             }
     }

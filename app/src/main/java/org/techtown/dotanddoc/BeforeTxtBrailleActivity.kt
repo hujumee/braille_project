@@ -14,12 +14,9 @@ class BeforeTxtBrailleActivity : AppCompatActivity() {
 
         val resultTxt: String? = intent.getStringExtra("resultTxt")
 
-        Log.d("areyou", resultTxt.toString())
-
         trans_braille_btn.setOnClickListener({
             val BrailleIntent = Intent(this, TxtBrailleActivity::class.java)
             BrailleIntent.putExtra("resultTxt", resultTxt)
-
             startActivity(BrailleIntent)
         })
     }
