@@ -46,6 +46,13 @@ android {
         enabled = true
     }
 
+    // aws amplify
+    compileOptions {
+        // Support for Java 8 features
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -68,7 +75,17 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    //ml kit를 위한 한국어 스크립트
+    // ml kit를 위한 한국어 스크립트
     implementation 'com.google.mlkit:text-recognition-korean:16.0.0-beta1'
     implementation 'com.android.support:multidex:1.0.3'
+
+    // aws amplify
+    // Amplify core dependency
+    implementation 'com.amplifyframework:core:1.28.1'
+    // Support for Java 8 features
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    // amplify storage
+    implementation 'com.amplifyframework:aws-storage-s3:1.28.1'
+    // amplify cognito
+    implementation 'com.amplifyframework:aws-auth-cognito:1.28.1'
 }

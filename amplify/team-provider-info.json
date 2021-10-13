@@ -10,6 +10,17 @@
       "StackName": "amplify-brailleproject-dev-22241",
       "StackId": "arn:aws:cloudformation:ap-northeast-2:876274123819:stack/amplify-brailleproject-dev-22241/30e1d9e0-22dc-11ec-ae78-0206f9fa66a0",
       "AmplifyAppId": "d2nvl52b57iuj1"
+    },
+    "categories": {
+      "auth": {
+        "brailleproject59c00863": {}
+      },
+      "storage": {
+        "brailleproject52fdf168": {
+          "bucketName": "for-amplify",
+          "region": "ap-northeast-2"
+        }
+      }
     }
   }
 }
