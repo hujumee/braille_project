@@ -25,7 +25,7 @@ class TxtBrailleActivity : AppCompatActivity() {
         val resultTxt = intent.getStringExtra("resultTxt") //이놈이 텍스트 파일 최종으로 가져온 겁니다.
 
         val nowDate = newFileName()
-        val fileName = nowDate + ".txt"
+        val fileName = "$nowDate.txt"
         uploadFile(resultTxt, fileName)
 
         val downloadKey = "${nowDate.substring(0,8)}/$nowDate.brf" // "yyyyMMdd/yyyyMMdd_HHmmss.brf"
@@ -55,7 +55,6 @@ class TxtBrailleActivity : AppCompatActivity() {
         val stringTxtContent = txtContent.toString()
         uploadFile.writeText(stringTxtContent)
 
-        //파일 내용 확인
 
         val options = StorageUploadFileOptions.defaultInstance()
 
@@ -92,7 +91,7 @@ class TxtBrailleActivity : AppCompatActivity() {
             )
 
             if (second == 60) {
-                //60초 시도시 cancel()
+                //60번 시도시 cancel()
                 cancel()
                 //alert()
             }
