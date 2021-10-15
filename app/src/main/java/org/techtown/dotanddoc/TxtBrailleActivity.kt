@@ -6,6 +6,7 @@ import android.content.Intent.*
 import android.os.*
 import android.os.Environment.*
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +49,15 @@ class TxtBrailleActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         tryDownload?.cancel()
+        handler.post() {
+            Toast.makeText(
+                this,
+                "다운로드가 취소되었습니다.", Toast.LENGTH_LONG
+            ).show()
+            val cancelIntent = Intent(this,MainActivity::class.java)
+            cancelIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP) //스택제거
+            startActivity(cancelIntent)
+        }
         super.onBackPressed()
     }
 
