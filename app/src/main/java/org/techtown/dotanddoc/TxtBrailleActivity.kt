@@ -22,6 +22,7 @@ class TxtBrailleActivity : AppCompatActivity() {
     private val progressDialog = CustomProgressDialog()
 
     lateinit var failureAlert: AlertDialog.Builder
+
     private val handler = object : Handler(Looper.getMainLooper()) {
     }
 
@@ -59,25 +60,6 @@ class TxtBrailleActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
-    fun awsS3controll(intentTxt: String?) {
-        //val resultTxt = intent.getStringExtra("resultTxt") //이놈이 텍스트 파일 최종으로 가져온 겁니다.
-
-        progressDialog.show(this, "Please Wait...")
-
-        val nowDate = nowDate()
-        val fileName = "$nowDate.txt"
-        uploadFile(intentTxt, fileName)
-
-        val downloadKey =
-            "${nowDate.substring(0, 8)}/$nowDate.brf" // "yyyyMMdd/yyyyMMdd_HHmmss.brf"
-        //다운로드 파일 함수 키 파라미터에 public 빼세요
-
-        Handler().postDelayed({ //30초 후 downloadFile 함수 실행
-            downloadFile(downloadKey)
-        }, 30000)
-    }
-
     fun nowDate(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
         val filename = sdf.format(System.currentTimeMillis())
@@ -92,7 +74,6 @@ class TxtBrailleActivity : AppCompatActivity() {
 
         val stringTxtContent = txtContent.toString()
         uploadFile.writeText(stringTxtContent)
-
 
         val options = StorageUploadFileOptions.defaultInstance()
 
@@ -110,7 +91,8 @@ class TxtBrailleActivity : AppCompatActivity() {
     private fun downloadFile(uploadedKey: String) {
         // 저장위치: 내부 저장소 => 수정해야함
         val file = File("${applicationContext.filesDir}/${downloadKey.substring(9)}")
-        //val file = File("${Environment.getExternalStorageDirectory()}")
+
+        Log.d("MyAmplifyApp", "${applicationContext.filesDir}/${downloadKey.substring(9)}")
 
         val CompleteIntent = Intent(this, SaveCompleteActivity::class.java)
 
@@ -129,7 +111,7 @@ class TxtBrailleActivity : AppCompatActivity() {
             Amplify.Storage.downloadFile(uploadedKey, file, options,
                 { progress -> Log.d("MyAmplifyApp", "Fraction completed: $progress") },
                 { success ->
-                    Log.d("MyAmplifyApp", "Successfully downloaded: $success")
+                    Log.d("MyAmplifyApp", "Successfully downloaded: ${success.file.name}")
                     //로딩 dialog 삭제
                     progressDialog.dialog.dismiss()
 
@@ -152,7 +134,7 @@ class TxtBrailleActivity : AppCompatActivity() {
                     failureAlert.setTitle("다운로드에 실패했습니다")
                     failureAlert.setMessage("다시 시도하시겠습니까?")
                     failureAlert.setPositiveButton("에") { dialogInterface: DialogInterface?, i: Int ->
-                        Log.d("MyAmplifyApp", "다운로드 실패")
+                        Log.d("MyAmplifyApp", "다운로드 재시도")
                         downloadFile(downloadKey)
                         finish()
                     }
