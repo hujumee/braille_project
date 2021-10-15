@@ -5,39 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/save_txt_btn"
+    <ImageButton
+        android:id="@+id/download_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="txt 파일로 저장하기"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginVertical="140dp"
+        android:background="@drawable/ic_download"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/txt_bookmark_btn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/txt_bookmark_btn"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginRight="80dp"
-        android:text="즐겨찾기"
+        android:text="@string/download_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trans_braille_btn"
-        app:layout_constraintVertical_bias="0.007" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/download_btn"
+        app:layout_constraintVertical_bias="0.108" />
 
     <Button
-        android:id="@+id/trans_braille_btn"
+        android:id="@+id/finish_download"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="점자로 변환하기"
-        app:layout_constraintBottom_toTopOf="@+id/save_txt_btn"
+        android:text="확인"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.923"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.079" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

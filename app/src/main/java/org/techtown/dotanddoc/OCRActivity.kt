@@ -92,7 +92,7 @@ class OCRActivity : AppCompatActivity() {
                 }
             }
         }
-        val resultTxt=text_info.setText(resultText)
-        resultIntent.putExtra("resultTxt", resultTxt.toString())
+        text_info.setText(resultText)
+        resultIntent.putExtra("resultTxt", resultText)
     }
 }

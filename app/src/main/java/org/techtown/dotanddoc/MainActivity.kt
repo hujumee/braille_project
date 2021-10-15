@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(),
     val FLAG_REQ_CAMERA = 101
     val FLAG_REQ_STORAGE = 102
 
-    var list = ArrayList<Uri>()
+    var list = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,18 +121,10 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    /*fun openCamera() {
-        if (checkPermission(CAMERA_PERMISSION, FLAG_PERM_CAMERA)) {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, FLAG_REQ_CAMERA)
-        }
-    }*/
-
     fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-        intent.type = MediaStore.Images.Media.CONTENT_TYPE
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(intent, FLAG_REQ_STORAGE)
 
@@ -199,7 +191,7 @@ class MainActivity : AppCompatActivity(),
                     }
 
                 FLAG_REQ_STORAGE -> {
-                if (resultCode == RESULT_OK && requestCode == 200) {
+
                         list.clear()
 
                         if (data?.clipData != null) { // 사진 여러개 선택한 경우
@@ -211,14 +203,13 @@ class MainActivity : AppCompatActivity(),
                             for (i in 0 until count) {
 
                                 val imageUri = data.clipData!!.getItemAt(i).uri
-                                if (imageUri != null) {
-                                    list.add(imageUri)
 
-                                /*
-                                    val multiImage = list.add(imageUri)
+                                if (imageUri != null) {
+                                    list.add(imageUri.toString())
+
                                     val multiIntent = Intent(this, MultiImageOCRActivity::class.java)
-                                    multiIntent.putExtra("multiImage", multiImage.toString())
-                                    startActivity(multiIntent)*/
+                                    multiIntent.putExtra("multiImage", list)
+                                    startActivity(multiIntent)
                                 }
                             }
 
@@ -227,22 +218,19 @@ class MainActivity : AppCompatActivity(),
                             data?.data?.let { uri ->
                                 val imageUri : Uri? = data?.data
                                 if (imageUri != null) {
-                                    list.add(imageUri)
+                                    list.add(imageUri.toString())
 
-                                /*
-                                    val oneImage=list.add(imageUri)
-                                    val oneIntent = Intent(this, MultiImageOCRActivity::class.java)
-                                    oneIntent.putExtra("oneImage", oneImage.toString())
-                                    startActivity(oneIntent)*/
+                                    val multiIntent = Intent(this, MultiImageOCRActivity::class.java)
+                                    multiIntent.putExtra("multiImage", list)
+                                    startActivity(multiIntent)
                                 }
                             }
                         }
 
                     }
-                    val uri = data?.data
+
                 }
             }
-        }
     }
 
 
