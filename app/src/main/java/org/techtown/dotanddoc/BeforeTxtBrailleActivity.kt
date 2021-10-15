@@ -26,14 +26,7 @@ class BeforeTxtBrailleActivity : AppCompatActivity() {
         val trans_braille_btn = findViewById<Button>(R.id.trans_braille_btn)
 
         trans_braille_btn.setOnClickListener {
-            // Show progress dialog with Title
-            progressDialog.show(this,"Please Wait...")
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                // Dismiss progress bar after 4 seconds
-                progressDialog.dialog.dismiss()
-                startActivity(BrailleIntent)
-            }, 5000)
+            startActivity(BrailleIntent)
         }
     }
 }

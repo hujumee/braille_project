@@ -1,8 +1,13 @@
 package org.techtown.dotanddoc
 
+import android.content.DialogInterface
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.options.StorageDownloadFileOptions
@@ -11,26 +16,35 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timer
+//import android.content.DialogInterface
 
 class TxtBrailleActivity : AppCompatActivity() {
 
     private var tryDownload: Timer? = null
+    private val progressDialog = CustomProgressDialog()
 
+    val FailureIntent = Intent(this, MainActivity::class.java)
+    val failureAlert = AlertDialog.Builder(this)
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.)
 
-        val resultTxt = intent.getStringExtra("resultTxt") //이놈이 텍스트 파일 최종으로 가져온 겁니다.
+        /*
+        failureAlert.setTitle("다운로드에 실패했습니다")
+        failureAlert.setMessage("다시 시도하시겠습니까?")
+        failureAlert.setPositiveButton("에", {dialogInterface: DiaglogInterface?, i: Int->
+            AWSS3controll()
+            finish()
+        })
+        failureAlert.setNegativeButton("아니오", DialogInterface.OnClickListener { dialog, which =>
+            startActivity(FailureIntent)
+            finish()
+        })
 
-        val nowDate = newFileName()
-        val fileName = "$nowDate.txt"
-        uploadFile(resultTxt, fileName)
+         */
 
-        val downloadKey = "${nowDate.substring(0,8)}/$nowDate.brf" // "yyyyMMdd/yyyyMMdd_HHmmss.brf"
-        //다운로드 파일 함수 키 파라미터에 public 빼세요
-        Handler().postDelayed({
-            downloadFile(downloadKey)
-        }, 30000)
 
     }
 
@@ -39,7 +53,25 @@ class TxtBrailleActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun newFileName() : String {
+    @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
+    fun AWSS3controll() {
+        val resultTxt = intent.getStringExtra("resultTxt") //이놈이 텍스트 파일 최종으로 가져온 겁니다.
+
+        progressDialog.show(this,"Please Wait...")
+
+        val nowDate = nowDate()
+        val fileName = "$nowDate.txt"
+        uploadFile(resultTxt, fileName)
+
+        val downloadKey = "${nowDate.substring(0,8)}/$nowDate.brf" // "yyyyMMdd/yyyyMMdd_HHmmss.brf"
+        //다운로드 파일 함수 키 파라미터에 public 빼세요
+
+        Handler().postDelayed({ //30초 후 downloadFile 함수 실행
+            downloadFile(downloadKey)
+        }, 30000)
+    }
+
+    fun nowDate() : String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
         val filename = sdf.format(System.currentTimeMillis())
 
@@ -47,6 +79,7 @@ class TxtBrailleActivity : AppCompatActivity() {
     }
 
     private fun uploadFile(txtContent: String?, fileName: String) {
+
         val uploadFile = File(applicationContext.filesDir, fileName)
         //파일명에 '/'붙이지 말자 오류난다
 
@@ -71,6 +104,9 @@ class TxtBrailleActivity : AppCompatActivity() {
         val file = File("${applicationContext.filesDir}/download")
         //val file = File("${Environment.getExternalStorageDirectory()}")
 
+        //SaveCompleteActivity에 성공했을 때 뷰 추가해주세요
+        val CompleteIntent = Intent(this, SaveCompleteActivity::class.java)
+
         val options = StorageDownloadFileOptions.defaultInstance()
 
         var second = 0
@@ -83,7 +119,11 @@ class TxtBrailleActivity : AppCompatActivity() {
                 { success ->
                     Log.d("MyAmplifyApp", "Successfully downloaded: $success")
                     cancel()
-                    //startActivity() or Toast message
+                    //로딩 dialog 삭제
+                    progressDialog.dialog.dismiss()
+
+                    //뷰 전환
+                    startActivity(CompleteIntent)
                 },
                 { exception -> Log.d("MyAmplifyApp", "Download Failure", exception) }
             )
@@ -91,7 +131,12 @@ class TxtBrailleActivity : AppCompatActivity() {
             if (second == 60) {
                 //60번 시도시 cancel()
                 cancel()
-                //alert()
+
+                //로딩 dialog 삭제
+                progressDialog.dialog.dismiss()
+
+                //alert로 바꿔주세요
+                startActivity(CompleteIntent)
             }
         }
 

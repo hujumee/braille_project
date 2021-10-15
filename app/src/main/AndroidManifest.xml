@@ -83,6 +83,9 @@
             android:name=".TextSelectActivity"
             tools:ignore="Instantiatable" />
         <activity
+            android:name=".SaveCompleteActivity"
+            tools:ignore="Instantiatable" />
+        <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.DotAndDoc"
             tools:ignore="Instantiatable">
