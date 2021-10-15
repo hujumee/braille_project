@@ -1,14 +1,12 @@
 package org.techtown.dotanddoc
 
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.options.StorageDownloadFileOptions
 import com.amplifyframework.storage.options.StorageUploadFileOptions
-import kotlinx.coroutines.delay
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -122,5 +120,4 @@ class TxtBrailleActivity : AppCompatActivity() {
             no -> main으로 돌아감
          */
     }
-
 }

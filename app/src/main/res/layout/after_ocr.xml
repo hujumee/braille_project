@@ -39,4 +39,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.923"
         tools:ignore="MissingConstraints" />
+
+    <include layout="@layout/activity_loading"
+        android:visibility="invisible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DotAndDoc">
 
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.blacklog.takepicture.fileprovider"
@@ -33,6 +32,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <activity
+            android:name=".CustomProgressDialog"
+            tools:ignore="Instantiatable" />
 
         <activity
             android:name=".MultiImageOCRActivity"
