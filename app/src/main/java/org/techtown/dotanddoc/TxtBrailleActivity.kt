@@ -140,8 +140,8 @@ class TxtBrailleActivity : AppCompatActivity() {
                 { exception -> Log.d("MyAmplifyApp", "Download Failure", exception) }
             )
 
-            if (trial == 60) {
-                //60번 시도시 cancel()
+            if (trial == 90) {
+                //90번 시도시 cancel()
                 progressDialog.dialog.dismiss()
                 cancel()
 
