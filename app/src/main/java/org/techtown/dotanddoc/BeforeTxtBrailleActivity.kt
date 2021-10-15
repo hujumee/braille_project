@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,7 @@ class BeforeTxtBrailleActivity : AppCompatActivity() {
         val trans_braille_btn = findViewById<Button>(R.id.trans_braille_btn)
 
         trans_braille_btn.setOnClickListener {
+            Log.d("TxtBrailleActivity","액티비티 넘어감")
             startActivity(BrailleIntent)
         }
     }
