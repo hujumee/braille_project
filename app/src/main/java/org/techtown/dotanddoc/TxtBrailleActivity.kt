@@ -22,13 +22,10 @@ class TxtBrailleActivity : AppCompatActivity() {
     private val progressDialog = CustomProgressDialog()
 
     lateinit var failureAlert: AlertDialog.Builder
-    val FailureIntent = Intent(this, MainActivity::class.java)
-
     private val handler = object : Handler(Looper.getMainLooper()) {
     }
 
-    lateinit var uploadTxt: String
-
+    lateinit var downloadKey: String
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,16 +34,24 @@ class TxtBrailleActivity : AppCompatActivity() {
 
         Log.d("TxtBrailleActivity", "액티비티 넘어옴")
 
-        FailureIntent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
-        //실패해서 메인화면으로 넘어가는 경우 메인화면 외 모든 스택 제거
-
         //AlertDialog 선언
         failureAlert = AlertDialog.Builder(this)
 
         val resultTxt = intent.getStringExtra("resultTxt")
-        uploadTxt = resultTxt.toString()
 
-        awsS3controll(uploadTxt)
+        progressDialog.show(this, "Please Wait...")
+
+        val nowDate = nowDate()
+        val fileName = "$nowDate.txt"
+        uploadFile(resultTxt, fileName)
+
+        downloadKey =
+            "${nowDate.substring(0, 8)}/$nowDate.brf" // "yyyyMMdd/yyyyMMdd_HHmmss.brf"
+        //다운로드 파일 함수 키 파라미터에 public 빼세요
+
+        Handler().postDelayed({ //15초 후 downloadFile 함수 실행
+            downloadFile(downloadKey)
+        }, 15000)
     }
 
     override fun onBackPressed() {
@@ -91,7 +96,7 @@ class TxtBrailleActivity : AppCompatActivity() {
 
         val options = StorageUploadFileOptions.defaultInstance()
 
-        val uploadKey = "${fileName.substring(0, 8)}/${fileName.substring(0, 15)}.txt"
+        val uploadKey = "${fileName.substring(0,8)}/${fileName.substring(0,15)}.txt"
         Log.d("MyAmplifyApp", uploadKey)
 
         Amplify.Storage.uploadFile(uploadKey, uploadFile, options,
@@ -104,13 +109,14 @@ class TxtBrailleActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     private fun downloadFile(uploadedKey: String) {
         // 저장위치: 내부 저장소 => 수정해야함
-        val file = File("${applicationContext.filesDir}/download")
+        val file = File("${applicationContext.filesDir}/${downloadKey.substring(9)}")
         //val file = File("${Environment.getExternalStorageDirectory()}")
 
-        //SaveCompleteActivity에 성공했을 때 뷰 추가해주세요
         val CompleteIntent = Intent(this, SaveCompleteActivity::class.java)
-        CompleteIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-        //성공하는 경우 TxtBrailleActivity는 스택에서 제거
+
+        val FailureIntent = Intent(this, MainActivity::class.java)
+        FailureIntent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+        //실패해서 메인화면으로 넘어가는 경우 메인화면 외 모든 스택 제거
 
         val options = StorageDownloadFileOptions.defaultInstance()
 
@@ -130,6 +136,8 @@ class TxtBrailleActivity : AppCompatActivity() {
                     //뷰 전환
                     startActivity(CompleteIntent)
                     cancel()
+                    this@TxtBrailleActivity.finish()
+                    //현재 액티비티 스택에서 제거
                 },
                 { exception -> Log.d("MyAmplifyApp", "Download Failure", exception) }
             )
@@ -145,7 +153,7 @@ class TxtBrailleActivity : AppCompatActivity() {
                     failureAlert.setMessage("다시 시도하시겠습니까?")
                     failureAlert.setPositiveButton("에") { dialogInterface: DialogInterface?, i: Int ->
                         Log.d("MyAmplifyApp", "다운로드 실패")
-                        awsS3controll(uploadTxt)
+                        downloadFile(downloadKey)
                         finish()
                     }
                     failureAlert.setNegativeButton("아니오") { dialogInterface: DialogInterface?, i: Int ->

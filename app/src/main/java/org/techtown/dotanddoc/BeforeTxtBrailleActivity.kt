@@ -3,16 +3,12 @@ package org.techtown.dotanddoc
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 
 class BeforeTxtBrailleActivity : AppCompatActivity() {
-
-    private val progressDialog = CustomProgressDialog()
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
