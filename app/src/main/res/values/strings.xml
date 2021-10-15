@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DotAndDoc</string>
+    <string name="app_name">Dot and Doc</string>
     <string name="home">홈</string>
     <string name="home_text">
         환영합니다!\n\n이미지 선택하고 텍스트로 변환 후 점자로 변환하려면 \n이미지 선택 후 추출을 선택해주세요.\n\n텍스트 파일을 점자로 변환하려면 텍스트 점자 변환을 \n선택해주세요.
