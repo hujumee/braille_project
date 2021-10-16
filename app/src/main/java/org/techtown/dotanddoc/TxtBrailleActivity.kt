@@ -57,13 +57,13 @@ class TxtBrailleActivity : AppCompatActivity() {
             val cancelIntent = Intent(this,MainActivity::class.java)
             cancelIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP) //스택제거
             startActivity(cancelIntent)
+            finish()
         }
         super.onBackPressed()
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     fun awsS3controll(intentTxt: String?) {
-        //val resultTxt = intent.getStringExtra("resultTxt") //이놈이 텍스트 파일 최종으로 가져온 겁니다.
 
         progressDialog.show(this, "Please Wait...")
 
@@ -137,9 +137,9 @@ class TxtBrailleActivity : AppCompatActivity() {
                     progressDialog.dialog.dismiss()
 
                     //외부 저장소 저장
-                    val existFile = openFileInput(downloadKey.substring(9))
+                    val existFile = openFileInput(uploadedKey.substring(9))
                     copyFile(existFile,
-                        "${getExternalFilesDir(DIRECTORY_DOWNLOADS)}/new${downloadKey.substring(9)}")
+                        "${getExternalFilesDir(DIRECTORY_DOWNLOADS)}/new${uploadedKey.substring(9)}")
 
                     //뷰 전환
                     startActivity(CompleteIntent)
