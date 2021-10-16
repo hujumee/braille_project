@@ -1,26 +1,19 @@
 package org.techtown.dotanddoc
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.*
-import android.net.Uri
 import android.os.*
 import android.os.Environment.*
-import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toFile
-import androidx.documentfile.provider.DocumentFile
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.options.StorageDownloadFileOptions
 import com.amplifyframework.storage.options.StorageUploadFileOptions
 import java.io.*
-import java.nio.file.Files.createDirectory
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timer
@@ -31,34 +24,12 @@ class TxtBrailleActivity : AppCompatActivity() {
     private var tryDownload: Timer? = null
     private val progressDialog = CustomProgressDialog()
 
-    val FailureIntent = Intent(this, MainActivity::class.java)
-
     lateinit var failureAlert: AlertDialog.Builder
     private val handler = object : Handler(Looper.getMainLooper()) {
-        @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
-        fun showAlert() {
-            FailureIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-            //실패해서 메인화면으로 넘어가는 경우 메인화면 외 모든 스택 제거
-
-            failureAlert.setTitle("다운로드에 실패했습니다")
-            failureAlert.setMessage("다시 시도하시겠습니까?")
-            failureAlert.setPositiveButton("에") { dialogInterface: DialogInterface?, i: Int ->
-                Log.d("MyAmplifyApp", "다운로드 재시도")
-                downloadFile(downloadKey)
-                finish()
-            }
-            failureAlert.setNegativeButton("아니오") { dialogInterface: DialogInterface?, i: Int ->
-                startActivity(FailureIntent)
-                finish()
-            }
-            failureAlert.show()
-        }
     }
 
+    lateinit var uploadTxt: String
     lateinit var downloadKey: String
-
-    // Request code for creating a brf file.
-    val CREATE_FILE = 1
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,12 +42,34 @@ class TxtBrailleActivity : AppCompatActivity() {
         failureAlert = AlertDialog.Builder(this)
 
         val resultTxt = intent.getStringExtra("resultTxt")
+        uploadTxt = resultTxt.toString()
+
+        awsS3controll(uploadTxt)
+    }
+
+    override fun onBackPressed() {
+        tryDownload?.cancel()
+        handler.post() {
+            Toast.makeText(
+                this,
+                "다운로드가 취소되었습니다.", Toast.LENGTH_LONG
+            ).show()
+            val cancelIntent = Intent(this,MainActivity::class.java)
+            cancelIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP) //스택제거
+            startActivity(cancelIntent)
+            finish()
+        }
+        super.onBackPressed()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
+    fun awsS3controll(intentTxt: String?) {
 
         progressDialog.show(this, "Please Wait...")
 
         val nowDate = nowDate()
         val fileName = "$nowDate.txt"
-        uploadFile(resultTxt, fileName)
+        uploadFile(intentTxt, fileName)
 
         downloadKey =
             "${nowDate.substring(0, 8)}/$nowDate.brf" // "yyyyMMdd/yyyyMMdd_HHmmss.brf"
@@ -85,11 +78,6 @@ class TxtBrailleActivity : AppCompatActivity() {
         Handler().postDelayed({ //15초 후 downloadFile 함수 실행
             downloadFile(downloadKey)
         }, 15000)
-    }
-
-    override fun onBackPressed() {
-        tryDownload?.cancel()
-        super.onBackPressed()
     }
 
     fun nowDate(): String {
@@ -121,11 +109,15 @@ class TxtBrailleActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     private fun downloadFile(uploadedKey: String) {
-        // 저장위치: 내부 저장소 => 수정해야함
+
         val fileDir = "${applicationContext.filesDir}/${downloadKey.substring(9)}"
         val file = File(fileDir)
 
         Log.d("MyAmplifyApp", "save: $fileDir")
+
+        val FailureIntent = Intent(this, MainActivity::class.java)
+        FailureIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
+        //실패해서 메인화면으로 넘어가는 경우 메인화면 외 모든 스택 제거
 
         val CompleteIntent = Intent(this, SaveCompleteActivity::class.java)
 
@@ -145,9 +137,9 @@ class TxtBrailleActivity : AppCompatActivity() {
                     progressDialog.dialog.dismiss()
 
                     //외부 저장소 저장
-                    val existFile = openFileInput(downloadKey.substring(9))
+                    val existFile = openFileInput(uploadedKey.substring(9))
                     copyFile(existFile,
-                        "${getExternalFilesDir(DIRECTORY_DOWNLOADS)}/new${downloadKey.substring(9)}")
+                        "${getExternalFilesDir(DIRECTORY_DOWNLOADS)}/new${uploadedKey.substring(9)}")
 
                     //뷰 전환
                     startActivity(CompleteIntent)
@@ -158,13 +150,25 @@ class TxtBrailleActivity : AppCompatActivity() {
                 { exception -> Log.d("MyAmplifyApp", "Download Failure", exception) }
             )
 
-            if (trial == 60) {
-                //60번 시도시 cancel()
+            if (trial == 90) {
+                //90번 시도시 cancel()
                 progressDialog.dialog.dismiss()
                 cancel()
 
                 //실패한 경우 alert show
-                handler.showAlert()
+                handler.post() {
+                    failureAlert.setTitle("다운로드에 실패했습니다")
+                    failureAlert.setMessage("다시 시도하시겠습니까?")
+                    failureAlert.setPositiveButton("에") { dialogInterface: DialogInterface?, i: Int ->
+                        Log.d("MyAmplifyApp", "다운로드 재시도")
+                        awsS3controll(uploadTxt)
+                    }
+                    failureAlert.setNegativeButton("아니오") { dialogInterface: DialogInterface?, i: Int ->
+                        startActivity(FailureIntent)
+                        finish()
+                    }
+                    failureAlert.show()
+                }
             }
         }
     }
